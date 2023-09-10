@@ -76,3 +76,386 @@ rownames(ut_data_org_pca) <- ut_data[,1]
 
 ```
 
+## Data Visualization and Analysis
+This is fairly straightforward. Each graphic drives home that this is simulated data. There is a beutiful stepped percentage of antibiotic resistance. Same goes for the Genes. I assume "Genes" are bacterial genes and not germline human genes in the subject noting that individual's PGx metabolism.  The Gene's by subject grph is really crowded, so I seperated it into 10 of ~100 subjects each. The Organism cell count distribution is again ver similar, with just a slight variation in subjects/count for each organism. 
+
+```{r , 1.plots, fig.width=12, fig.height=6, warning=FALSE}
+
+# Percent Antibiotic Resistance
+ggplot(ut_data_anti_long, aes(x=Antibiotic, y = prop.table(stat(count)), fill=factor(status)), 
+                                label = scales::percent(prop.table(stat(count)))) +
+      geom_bar(colour = "black", position = "fill") + scale_y_continuous(labels = scales::percent) +
+      scale_fill_brewer(palette = "Pastel1") + scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+      geom_text(aes(label=signif(..count.. / tapply(..count.., ..x.., sum)[as.character(..x..)], digits=3)),
+           stat="count", position=position_fill(vjust=0.5)) +
+      labs(y="Proportion", fill = "AR Status") + ggtitle("Percentage of samples with Antibiotic resistance for each Antibiotic") +
+      theme(plot.title = element_text(color="black",size = 24, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+
+#Table format
+table(ut_data_anti_long$Antibiotic, ut_data_anti_long$status=="R")
+
+
+# Presence of each gene across samples
+ggplot(ut_data_gene_long[], aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) + 
+  labs(y="Sample ID", fill = "Gene Presence") + ggtitle("Presence or Absence of Genes 1 through 5 for each sample ") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 24, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+
+#Table format
+table(ut_data_gene_long$Gene, ut_data_gene_long$status=="1")
+
+# You cannot read the Sample_IDs on the graph with 1000 rows. Instead lets generate 10 graphs with ~100 rows each.
+ggplot(subset(ut_data_gene_long, grepl("^Sample_00",Sample_ID)), aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) + 
+  labs(y="Sample ID", fill = "Gene Presence") +ggtitle("Presence or Absence of Genes 1 through 5 for each sample 1:99 ") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+ggplot(subset(ut_data_gene_long, grepl("^Sample_01",Sample_ID)), aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) +
+  labs(y="Sample ID", fill = "Gene Presence") +ggtitle("Presence or Absence of Genes 1 through 5 for each sample 100:199 ") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+ggplot(subset(ut_data_gene_long, grepl("^Sample_02",Sample_ID)), aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) +
+  labs(y="Sample ID", fill = "Gene Presence") +ggtitle("Presence or Absence of Genes 1 through 5 for each sample 200:299") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+ggplot(subset(ut_data_gene_long, grepl("^Sample_03",Sample_ID)), aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) +
+  labs(y="Sample ID", fill = "Gene Presence") +ggtitle("Presence or Absence of Genes 1 through 5 for each sample 300:399") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+ggplot(subset(ut_data_gene_long, grepl("^Sample_04",Sample_ID)), aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) +
+  labs(y="Sample ID", fill = "Gene Presence") +ggtitle("Presence or Absence of Genes 1 through 5 for each sample 400:499") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+ggplot(subset(ut_data_gene_long, grepl("^Sample_05",Sample_ID)), aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) +
+  labs(y="Sample ID", fill = "Gene Presence") +ggtitle("Presence or Absence of Genes 1 through 5 for each sample 500:599") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+ggplot(subset(ut_data_gene_long, grepl("^Sample_06",Sample_ID)), aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) +
+  labs(y="Sample ID", fill = "Gene Presence") +ggtitle("Presence or Absence of Genes 1 through 5 for each sample 600:699") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+ggplot(subset(ut_data_gene_long, grepl("^Sample_07",Sample_ID)), aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) +
+  labs(y="Sample ID", fill = "Gene Presence") +ggtitle("Presence or Absence of Genes 1 through 5 for each sample 700:799") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+ggplot(subset(ut_data_gene_long, grepl("^Sample_08",Sample_ID)), aes(x=Gene, y=Sample_ID )) + geom_tile(aes(fill = factor(status))) +
+  labs(y="Sample ID", fill = "Gene Presence") +ggtitle("Presence or Absence of Genes 1 through 5 for each sample 800:899") +
+  scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+ggplot(subset(ut_data_gene_long, grepl("^Sample_09",Sample_ID) | grepl("^Sample_1",Sample_ID)), aes(x=Gene, y=Sample_ID )) + 
+  geom_tile(aes(fill = factor(status))) + labs(y="Sample ID", fill = "Gene Presence") + 
+  ggtitle("Presence or Absence of Genes 1 through 5 for each sample 900:1000") + scale_fill_manual(values = c("darkblue","lightblue")) +
+  theme(plot.title = element_text(color="black",size = 22, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+
+
+# distributions of each organism across all samples
+
+ggplot(ut_data_org_long, aes(x=count, color=Organism)) + geom_density() +
+  ggtitle("Distribution of cell counts for each organism") + scale_fill_brewer(palette = "Pastel1") +
+  theme(plot.title = element_text(color="black",size = 24, face = "bold"),axis.title = element_text(color="black",size = 12, face = "bold"))
+
+#Table format
+table(ut_data_org_long$Organism, ut_data_org_long$count>0)
+
+```
+
+# Additional Analysis
+
+If this data were real I would look to see if the oraganism cell counts correlate with each other (they don't see the ggpairs output). I would calculate the total number of samples with at least one active organism, but also look at the distribution for how many organism are in a common UTI. For this case I assume ANY cells cell count>0 is equivalent to infection. This may not be the case, but it is my baseline assumption for this analysis. 894 samples have at least 1 organism, while 106 samples have no organism on the test. The median and IQR for the number of organisms per sample is 2{1:3}. 
+
+I would do the same for Antibiotic resistance to the 17 antibiotics and the 5 genes. It turns out every sample is resistant to at least 4 Antibiotics with median{IQR} resitance to 9{8-11}. This seems odd or impossible since 106 samples have no UTI organisms, and therefore cannot possibly have antibiotic resistance. Again, I am not sure what the "Genes" are counting, but if these are bacterial genes, it may again be impossible for someone with no organism to have genes present. Bothe of these issues would lead me to question the validity of the assay.
+
+
+```{r , 1.analysis, fig.width=12, fig.height=6, warning=FALSE}
+
+# organism cross-correlation
+ggpairs(ut_data[org_col])
+
+# organism present 
+table(ut_data$uti_present)
+ggplot(ut_data, aes(x=numorg_count, )) + geom_bar() 
+summary(ut_data$numorg_count)
+
+# resitance to antibiotics
+table(ut_data$AR_present)
+ggplot(ut_data, aes(x=numAR_count, )) + geom_bar() 
+summary(ut_data$numAR_count)
+
+# gene present
+table(ut_data$gene_present)
+ggplot(ut_data, aes(x=numgene_count, )) + geom_bar() 
+summary(ut_data$numgene_count)
+
+# Gene vs Organisms present
+addmargins(table(ut_data$gene_present, ut_data$uti_present))
+
+```
+
+
+## MCMC analysis
+# First 4 antibiotics vs all organism.
+The instructions were very unclear as to what was being predicted. Due to this vagueness, I chose to model both directions, at least for some of the variables. I really don't think the version predicting antibiotic resistance was working correctly, so I abandoned it after 4 antibiotics. No Organism cell count predicted the presence or absence of Antibiotic resistance for the first four antibiotics. 
+
+
+```{r , 2.mcmc_ab, warning=FALSE}
+
+# While both of these sections could have been run in a loop, I specifically chose to write out each command 
+# separately to see the exact command implemented for each model.
+
+
+ut_data$AB1 <- 0
+ut_data$AB1[ut_data$Antibiotic_1=="R"] <- 1
+
+ut_data$AB2 <- 0
+ut_data$AB2[ut_data$Antibiotic_2=="R"] <- 1
+
+ut_data$AB3 <- 0
+ut_data$AB3[ut_data$Antibiotic_3=="R"] <- 1
+
+ut_data$AB4 <- 0
+ut_data$AB4[ut_data$Antibiotic_4=="R"] <- 1
+
+
+AB1_stan <- stan_glm(AB1 ~ Organism_1 + Organism_2 + Organism_3 + Organism_4 + Organism_5 + 
+                       Organism_6 + Organism_7 + Organism_8 + Organism_9 + Organism_10, 
+                     family = binomial(link = "logit"),prior = NULL, data=ut_data)
+AB1_stan_m <- as.matrix(AB1_stan)
+
+AB2_stan <- stan_glm(AB2 ~ Organism_1 + Organism_2 + Organism_3 + Organism_4 + Organism_5 + 
+                       Organism_6 + Organism_7 + Organism_8 + Organism_9 + Organism_10, 
+                     family = binomial(link = "logit"),prior = NULL, data=ut_data)
+AB2_stan_m <- as.matrix(AB2_stan)
+
+AB3_stan <- stan_glm(AB3 ~ Organism_1 + Organism_2 + Organism_3 + Organism_4 + Organism_5 + 
+                       Organism_6 + Organism_7 + Organism_8 + Organism_9 + Organism_10, 
+                     family = binomial(link = "logit"),prior = NULL, data=ut_data)
+AB3_stan_m <- as.matrix(AB3_stan)
+
+AB4_stan <- stan_glm(AB4 ~ Organism_1 + Organism_2 + Organism_3 + Organism_4 + Organism_5 + 
+                       Organism_6 + Organism_7 + Organism_8 + Organism_9 + Organism_10, 
+                     family = binomial(link = "logit"),prior = NULL, data=ut_data)
+AB4_stan_m <- as.matrix(AB4_stan)
+
+
+# AB1
+posterior_interval(AB1_stan, prob=0.95)
+plot(AB1_stan)
+ppc_dens_overlay(y = AB1_stan$y, yrep = posterior_predict(AB1_stan, draws = 50))
+
+mcmc_trace(AB1_stan_m )
+
+
+# AB2
+posterior_interval(AB2_stan, prob=0.95)
+plot(AB2_stan)
+ppc_dens_overlay(y = AB2_stan$y, yrep = posterior_predict(AB2_stan, draws = 50))
+
+mcmc_trace(AB2_stan_m )
+
+
+# AB3
+posterior_interval(AB3_stan, prob=0.95)
+plot(AB3_stan)
+ppc_dens_overlay(y = AB3_stan$y, yrep = posterior_predict(AB3_stan, draws = 50))
+
+mcmc_trace(AB3_stan_m )
+
+
+# AB4
+posterior_interval(AB4_stan, prob=0.95)
+plot(AB4_stan)
+ppc_dens_overlay(y = AB4_stan$y, yrep = posterior_predict(AB4_stan, draws = 50))
+
+mcmc_trace(AB4_stan_m )
+
+
+
+
+```
+
+# Organism as Outcome Variable vs 17 antibiotic resitance variables.
+
+This may be the original intention of this exercise. At least this direction has some significant output. For example, Organism2 cell size appears to have a positive association with Antibiotic resistance to AB3 and AB16. Several other organism show slight associations with one or more antibiotics. See the posterior interval tables and interval plots for which may Antibiotics may be significant. Any 95% interval that does not include "0" may be significantly associated with that organism's cell count.
+
+```{r , 2.mcmc_org, warning=FALSE}
+
+# While both of these sections could have been run in a loop, I specifically chose to write out each command 
+# separately to see the exact command implemented for each model.
+
+# Build out models
+org1_stan <- stan_glm(Organism_1 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org1_stan_m <- as.matrix(org1_stan)
+
+org2_stan <- stan_glm(Organism_2 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org2_stan_m <- as.matrix(org2_stan)
+
+org3_stan <- stan_glm(Organism_3 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org3_stan_m <- as.matrix(org3_stan)
+
+org4_stan <- stan_glm(Organism_4 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org4_stan_m <- as.matrix(org4_stan)
+
+org5_stan <- stan_glm(Organism_5 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org5_stan_m <- as.matrix(org5_stan)
+
+org6_stan <- stan_glm(Organism_6 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org6_stan_m <- as.matrix(org6_stan)
+
+org7_stan <- stan_glm(Organism_7 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org7_stan_m <- as.matrix(org7_stan)
+
+org8_stan <- stan_glm(Organism_8 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org8_stan_m <- as.matrix(org8_stan)
+
+org9_stan <- stan_glm(Organism_9 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org9_stan_m <- as.matrix(org9_stan)
+
+org10_stan <- stan_glm(Organism_10 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                        Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                        Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                     family = gaussian(),prior = NULL, data=ut_data)
+org10_stan_m <- as.matrix(org10_stan)
+
+# model diagnostics
+# org1
+posterior_interval(org1_stan, prob=0.95)
+plot(org1_stan)
+ppc_dens_overlay(y = org1_stan$y, yrep = posterior_predict(org1_stan, draws = 50))
+
+mcmc_trace(org1_stan_m )
+
+# org2
+posterior_interval(org2_stan, prob=0.95)
+plot(org2_stan)
+ppc_dens_overlay(y = org2_stan$y, yrep = posterior_predict(org2_stan, draws = 50))
+
+mcmc_trace(org2_stan_m )
+
+# org3
+posterior_interval(org3_stan, prob=0.95)
+plot(org3_stan)
+ppc_dens_overlay(y = org3_stan$y, yrep = posterior_predict(org3_stan, draws = 50))
+
+mcmc_trace(org3_stan_m )
+
+# org4
+posterior_interval(org4_stan, prob=0.95)
+plot(org4_stan)
+ppc_dens_overlay(y = org4_stan$y, yrep = posterior_predict(org4_stan, draws = 50))
+
+mcmc_trace(org3_stan_m )
+
+# org5
+posterior_interval(org5_stan, prob=0.95)
+plot(org5_stan)
+ppc_dens_overlay(y = org5_stan$y, yrep = posterior_predict(org5_stan, draws = 50))
+
+mcmc_trace(org5_stan_m )
+
+# org6
+posterior_interval(org6_stan, prob=0.95)
+plot(org6_stan)
+ppc_dens_overlay(y = org6_stan$y, yrep = posterior_predict(org6_stan, draws = 50))
+
+mcmc_trace(org6_stan_m )
+
+# org7
+posterior_interval(org7_stan, prob=0.95)
+plot(org7_stan)
+ppc_dens_overlay(y = org7_stan$y, yrep = posterior_predict(org7_stan, draws = 50))
+mcmc_trace(org7_stan_m )
+
+# org8
+posterior_interval(org8_stan, prob=0.95)
+plot(org8_stan)
+ppc_dens_overlay(y = org8_stan$y, yrep = posterior_predict(org8_stan, draws = 50))
+mcmc_trace(org8_stan_m )
+
+# org9
+posterior_interval(org9_stan, prob=0.95)
+plot(org9_stan)
+ppc_dens_overlay(y = org9_stan$y, yrep = posterior_predict(org9_stan, draws = 50))
+mcmc_trace(org5_stan_m )
+
+# org10
+posterior_interval(org10_stan, prob=0.95)
+plot(org10_stan)
+ppc_dens_overlay(y = org10_stan$y, yrep = posterior_predict(org10_stan, draws = 50))
+mcmc_trace(org10_stan_m )
+
+```
+
+
+
+## PCA analysis
+
+The PCA analysis shows that this is random simulated data with very little underlying structure. The first 10 principal components have  equal weight across their eigenvalues with a range of 11.4 to 8.5 across all 10 components. 
+
+```{r , 3.pca, warning=FALSE}
+
+ut_org_results <- prcomp(ut_data_org_pca, scale = TRUE)
+
+biplot(ut_org_results, scale = 0, xlabs = rep("x",1000))
+
+var_explained <- ut_org_results$sdev^2/sum(ut_org_results$sdev^2)
+var_explained
+
+#create scree plot
+qplot(c(1:10), var_explained) + 
+  geom_line() + 
+  xlab("Principal Component") + 
+  ylab("Variance Explained") +
+  ggtitle("Scree Plot") +
+  ylim(0, 1)
+
+
+```
+
+
+Overall, this is a very mediocre coding test if the priority for this position is analyzing clinical trials data.  It really doesn't help that most tests are negative, and some of the data makes no physiologic sense. The MCMC Bayesian analysis is not something that most Biostatisticians would ever really use. Especially since you will get similar results (at least identifying the same resistant Antibiotics) using regular linear regression. In my experience, it can be very difficult to get results accepted if you use overly complicated or less common statistical methods.  
+
+
+
+```{r , extra, warning=FALSE}
+
+#glm model
+org2_glm <- glm(Organism_2 ~ Antibiotic_1 + Antibiotic_2 + Antibiotic_3 + Antibiotic_4 + Antibiotic_5 + Antibiotic_6 + 
+                  Antibiotic_7 + Antibiotic_8 + Antibiotic_9 + Antibiotic_10 + Antibiotic_11 + Antibiotic_12 + 
+                  Antibiotic_13 + Antibiotic_14 + Antibiotic_15 + Antibiotic_16 + Antibiotic_17, 
+                family = gaussian(), data=ut_data)
+
+summary(org2_glm)
+anova(org2_glm, test='LR' )
+
+# compared to:
+posterior_interval(org2_stan, prob=0.95)
+
+
+```
+
