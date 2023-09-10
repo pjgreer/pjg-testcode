@@ -1,0 +1,78 @@
+---
+title: "coding-test"
+author: "Phil Greer"
+date: "2023-09-09"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+install_if_missing <- function(packages) {
+  
+  
+}
+
+install_if_missing(c('ggplot2', 'tidyverse', 'GGally', 'rstanarm', 'bayesplot'))
+
+library(ggplot2)
+library(tidyverse)
+library(GGally)
+library(rstanarm)
+library(bayesplot)
+
+```
+
+## Read in Data
+
+Read in the csv file, explore the data and create summary information.
+
+```{r read data, warning=FALSE}
+# read in the csv file
+ut_data <- read.csv("~/Downloads/urine_test_data.csv")
+
+#examine structure
+dim(ut_data)
+names(ut_data)
+str(ut_data)
+summary(ut_data)
+
+# Create lists of each group of variables
+org_col <- c("Organism_1","Organism_2","Organism_3","Organism_4","Organism_5","Organism_6",
+             "Organism_7","Organism_8","Organism_9","Organism_10")
+
+antibio_col <- c("Antibiotic_1","Antibiotic_2","Antibiotic_3","Antibiotic_4","Antibiotic_5","Antibiotic_6",
+                 "Antibiotic_7","Antibiotic_8","Antibiotic_9","Antibiotic_10","Antibiotic_11","Antibiotic_12",
+                 "Antibiotic_13","Antibiotic_14","Antibiotic_15","Antibiotic_16","Antibiotic_17")
+
+gene_col <- c("Gene_1","Gene_2","Gene_3","Gene_4","Gene_5")
+
+# make sure Sample_ID is a factor varaible
+ut_data$Sample_ID <- factor(ut_data$Sample_ID)
+
+# Add new summary data to the wide dataframe
+ut_data$numorg_count <- rowSums(ut_data[org_col]>0)
+ut_data$uti_present <- (ut_data$numorg_count>0) 
+ut_data$numAR_count <- (rowSums(ut_data[antibio_col]=="R")) 
+ut_data$AR_present <- (ut_data$numAR_count>0) 
+ut_data$numgene_count <- (rowSums(ut_data[gene_col])) 
+ut_data$gene_present <- (ut_data$numgene_count>0) 
+
+
+# create long dataframes for graphics
+ut_data_org_long <- gather(ut_data[c("Sample_ID",org_col)], 
+                      Organism, count, Organism_1:Organism_10, factor_key = TRUE)
+ut_data_anti_long <- gather(ut_data[c("Sample_ID",antibio_col)], 
+                       Antibiotic, status, Antibiotic_1:Antibiotic_17, factor_key = TRUE)
+ut_data_gene_long <- gather(ut_data[c("Sample_ID",gene_col)], 
+                       Gene, status, Gene_1:Gene_5, factor_key = TRUE)
+
+
+# Create dataframe for organism PCA, set rownames at Sample_ID
+ut_data_org_pca <- ut_data[org_col] 
+rownames(ut_data_org_pca) <- ut_data[,1]
+
+
+
+```
+
